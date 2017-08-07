@@ -13,4 +13,4 @@ if __name__ == '__main__':
     youtube = YoutubeRecording(
         YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN
     )
-    youtube.uploads_videos()
+    youtube.uploads_videos(VIDEO_DIR)

@@ -1,8 +1,9 @@
-import requests
-
 import os.path
+
 from datetime import datetime
 from urllib.parse import urljoin
+
+import requests
 
 
 class ZoomClient(object):

@@ -18,6 +18,7 @@ from oauth2client.client import AccessTokenCredentials
 from slack import SlackClient
 from settings import SLACK_TOKEN, SLACK_CHANNEL
 
+
 # Explicitly tell the underlying HTTP transport library not to retry, since we are handling retry logic ourselves.
 httplib2.RETRIES = 1
 
@@ -123,15 +124,15 @@ class YoutubeRecording(object):
                 sleep_seconds = random.random() * 2 ** retry
                 time.sleep(sleep_seconds)
 
-    def uploads_videos(self):
-        files = YoutubeRecording.get_video_files('video', 'mp4')
+    def uploads_videos(self, video_dir):
+        files = YoutubeRecording.get_video_files(video_dir, 'mp4')
         for fname in files:
-            fpath = os.path.join('video', fname)
+            fpath = os.path.join(video_dir, fname)
             if not os.path.exists(fpath):
                 continue
             options = dict(
                 file=fpath,
-                title=os.path.splitext(os.path.basename(fname))[0] + 'test4',
+                title=os.path.splitext(os.path.basename(fname))[0],
                 privacyStatus='unlisted',
             )
             video_id = self.initialize_upload(options)

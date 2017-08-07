@@ -3,9 +3,11 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 
+
 dotenv_path = join(dirname(dirname(__file__)), '.env')
 load_dotenv(dotenv_path)
 
+BASE_DIR = dirname(dirname(os.path.abspath(__file__)))
 
 YOUTUBE_REFRESH_TOKEN = os.environ.get('YOUTUBE_REFRESH_TOKEN')
 YOUTUBE_CLIENT_ID = os.environ.get('YOUTUBE_CLIENT_ID')
@@ -19,7 +21,7 @@ ZOOM_EMAIL = os.environ.get('ZOOM_EMAIL')
 ZOOM_PASSWORD = os.environ.get('ZOOM_PASSWORD')
 
 
-VIDEO_DIR = 'video'
+VIDEO_DIR = join(BASE_DIR, 'video')
 
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
 SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
