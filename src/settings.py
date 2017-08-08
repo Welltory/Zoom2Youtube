@@ -9,9 +9,10 @@ load_dotenv(dotenv_path)
 
 BASE_DIR = dirname(dirname(os.path.abspath(__file__)))
 
-YOUTUBE_REFRESH_TOKEN = os.environ.get('YOUTUBE_REFRESH_TOKEN')
-YOUTUBE_CLIENT_ID = os.environ.get('YOUTUBE_CLIENT_ID')
-YOUTUBE_CLIENT_SECRET = os.environ.get('YOUTUBE_CLIENT_SECRET')
+GOOGLE_REFRESH_TOKEN = os.environ.get('GOOGLE_REFRESH_TOKEN')
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+GOOGLE_CODE = os.environ.get('GOOGLE_CODE')
 
 
 ZOOM_KEY = os.environ.get('ZOOM_KEY')
@@ -25,3 +26,5 @@ VIDEO_DIR = join(BASE_DIR, 'video')
 
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
 SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+
+DOWNLOADED_FILES = 'downloaded'

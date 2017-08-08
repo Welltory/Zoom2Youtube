@@ -22,7 +22,7 @@ class SlackClient(object):
             headers={'content-type': 'application/x-www-form-urlencoded'}
         )
 
-    def chat_post_message(self, channel, text, **params):
+    def chat_post_message(self, channel: str, text: str, **params):
         """https://api.slack.com/methods/chat.postMessage"""
         method = 'chat.postMessage'
         params.update({
@@ -30,3 +30,7 @@ class SlackClient(object):
             'text': text,
         })
         return self._request(method, params)
+
+    def send_message_to_channels(self, channels: list, text: str, **params):
+        for channel in channels:
+            self.chat_post_message(channel, text, **params)

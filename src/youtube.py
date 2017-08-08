@@ -97,7 +97,10 @@ class YoutubeRecording(object):
         insert_request = connector.videos().insert(
             part=",".join(body.keys()), body=body,
             media_body=MediaFileUpload(options.get('file'), chunksize=-1, resumable=True))
-        return self.resumable_upload(insert_request)
+        try:
+            return self.resumable_upload(insert_request)
+        except Exception as e:
+            print(str(e))
 
     def resumable_upload(self, insert_request):
         response = None
@@ -142,8 +145,9 @@ class YoutubeRecording(object):
             os.remove(fpath)
 
     def notify(self, video_url):
+        channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
         try:
-            self.slack_client.chat_post_message(SLACK_CHANNEL, video_url)
+            self.slack_client.send_message_to_channels(channels, video_url)
         except Exception as e:
             print('Sending error to slack: {}'.format(str(e)))
 
