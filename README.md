@@ -50,10 +50,10 @@
 Ключи для slack:
 ----------------
 
-    SLACK_RECIPIENS
+    SLACK_CHANNEL
     SLACK_TOKEN
 
-- записать через запятую получателей в `SLACK_RECIPIENS`, например `SLACK_RECIPIENS=#my_cannel,@my_user`
+- записать через запятую получателей в `SLACK_CHANNEL`, например `SLACK_CHANNEL=#my_cannel,@my_user`
 - записать slack token в `SLACK_TOKEN`
 
 
