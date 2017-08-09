@@ -1,1 +1,1 @@
-*/1 * * * * root python3.6 /opt/app/src/main.py >> /var/log/cron.log 2>&1
+* * * * * root python3.6 /opt/app/src/main.py >> /var/log/cron.log 2>&1

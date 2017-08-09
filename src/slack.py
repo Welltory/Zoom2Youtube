@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from urllib.parse import urljoin
 
 import requests
@@ -9,18 +11,6 @@ class SlackClient(object):
     def __init__(self, token, bot_name=''):
         self.token = token
         self.bot_name = bot_name
-
-    def _request(self, method, params):
-        url = urljoin(SlackClient.BASE_URL, method)
-        data = {'token': self.token}
-        if self.bot_name:
-            data['username'] = self.bot_name
-        params.update(data)
-        return requests.post(
-            url,
-            data=params,
-            headers={'content-type': 'application/x-www-form-urlencoded'}
-        )
 
     def chat_post_message(self, channel: str, text: str, **params):
         """https://api.slack.com/methods/chat.postMessage"""
@@ -34,3 +24,15 @@ class SlackClient(object):
     def send_message_to_channels(self, channels: list, text: str, **params):
         for channel in channels:
             self.chat_post_message(channel, text, **params)
+
+    def _request(self, method, params):
+        url = urljoin(SlackClient.BASE_URL, method)
+        data = {'token': self.token}
+        if self.bot_name:
+            data['username'] = self.bot_name
+        params.update(data)
+        return requests.post(
+            url,
+            data=params,
+            headers={'content-type': 'application/x-www-form-urlencoded'}
+        )

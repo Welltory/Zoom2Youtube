@@ -1,9 +1,40 @@
 # zoom2youtube
 
-Для работы приложения необходимо создать `.env` файл в корне проекта, указав в нем ключи, описанные ниже:
+Утилита для перекладывания видео из сервиса Zoom в Youtube.
 
-Ключи для zoom.us:
-------------------
+Zoom2Youtube позволяет:
+
+- Скачать видео из Zoom
+- Закачать видео в Youtube
+- Скинуть ссылку на загруженное видео в Slack канал
+
+Zoom2Youtube будет полезен тем, кто регулярно использует Zoom для коммуникаций команды и не хочет платить деньги за каждый 1Gb места в Zoom.
+
+Проект написан на Python и запускается в Docker. Это упрощает первичное развертывание проекта.
+
+
+Настройка
+=========
+
+Шаг 1 - установка Docker
+------------------------
+
+Для использования утилиты необходимо установить Docker и Docker-Compose
+
+- Инструкция по установке docker: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
+- Инструкция по установке docker-compose: https://docs.docker.com/compose/install/#alternative-install-options
+
+Затем собрать Docker образ. Для этого необходимо выполнить команду
+
+```
+    $ make build
+```
+
+
+Шаг 2 - настройка Zoom
+----------------------
+
+Для работы приложения необходимо создать `.env` файл в корне проекта, указав в нем ключи, описанные ниже:
 
     ZOOM_KEY
     ZOOM_SECRET
@@ -20,9 +51,10 @@
 - в поле API Endpoint выбрать https://api.zoom.us/v1/chat/list
 - записать `Host User ID` в `ZOOM_HOST_ID`
 
+Шаг 3 - настройка Youtube
+-------------------------
 
-Ключи для youtube:
-------------------
+В файл `.env` добавить ключи
 
     GOOGLE_REFRESH_TOKEN
     GOOGLE_CLIENT_ID
@@ -40,15 +72,18 @@
 - записать `Client ID` в `GOOGLE_CLIENT_ID` и `Client Secret` в `GOOGLE_CLIENT_SECRET`
 
 Для получения `GOOGLE_REFRESH_TOKEN` выполнить следующие действия:
-- открыть ссылку https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code
+
+- открыть ссылку [https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code](https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code)
 - выбрать нужный google акканут для которого нужно получить доступ
 - принять доступ
-- записать полученный токен в `.env` в параметре `GOOGLE_CODE`
-- запустить скрипт `python3.6 src/get_token.py`
-- полученный refresh token записать в `GOOGLE_REFRESH_TOKEN`
+- записать полученный токен в `.env` в параметр `GOOGLE_CODE`
+- запустить скрипт `python3.6 src/get_google_refresh_token.py`
+- полученный refresh token записать в файла `.env` в параметр `GOOGLE_REFRESH_TOKEN`
 
-Ключи для slack:
-----------------
+Шаг 4 - настройка Slack
+-----------------------
+
+В файл `.env` добавить ключи
 
     SLACK_CHANNEL
     SLACK_TOKEN
@@ -57,50 +92,67 @@
 - записать slack token в `SLACK_TOKEN`
 
 
-Проверка ключей:
-----------------
-Для проверки, что все ключи были записаны в `.env` файл необходимо запустить скрипт `python3.6 src/check_keys.py`
 
+Шаг 5 - Проверка ключей
+-----------------------
 
-Установка docker:
------------------
-Инструкция по установке docker: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
-Инструкция по установке docker-compose: https://docs.docker.com/compose/install/#alternative-install-options
+Для проверки, что все ключи были записаны в `.env` файл необходимо запустить скрипт 
 
-
-Запуск
-------
-Собрать докер образ командой:
 ```
-    $ make build
+    python3.6 src/check_env.py
 ```
+
+
+Шаг 6 - запуск приложения
+-------------------------
+
 Запустить контейнер:
 ```
     $ make up
 ```
 
-Альтернативный запуск через virtualenv
---------------------------------------
 
-- создать виртуальное окружение
+Шаг 6 - альтернативный способ запуска приложения, через virtualenv
+------------------------------------------------------------------------
+
+- Создать виртуальное окружение
 ```
     $ virtualenv venv -p /usr/bin/python3 --no-site-package
 ```
-- активировать виртуальное окружение
+- Активировать виртуальное окружение
 ```
     $ source venv/bin/activate
 ```
-- установить зависимости
+- Установить зависимости
 ```
     $ pip install -r requirements.txt
 ```
-- скопировать cron конфиг
+- Скопировать cron конфиг
 ```
     $ sudo cp cron/crontab /etc/cron.d/zoom2youtube-cron
 ```
-- перезапустить крон
+- Перезапустить крон
 ```
     $  sudo service cron restart
+```
+
+Пример .env файла
+-----------------
+
+```
+ZOOM_KEY=AAAAAAAAAAAAAAA
+ZOOM_SECRET=BBBBBBBBBBBB
+ZOOM_HOST_ID=CCCCCCCCCCC
+ZOOM_EMAIL=mail@gmail.com
+ZOOM_PASSWORD=user_password
+
+GOOGLE_CLIENT_ID=AAAAAAAAAAAAAA.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=BBBBBBBBBBBBBb
+GOOGLE_REFRESH_TOKEN=CCCCCCCCCCCC
+GOOGLE_CODE=DDDDDDDDDDDDDD
+
+SLACK_CHANNEL=@user
+SLACK_TOKEN=AAAAAAAAAAAAA
 ```
 
 

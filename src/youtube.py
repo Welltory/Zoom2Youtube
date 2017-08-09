@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import os
 import random
 import time
+from typing import List
 
-import requests
 import httplib2
+import requests
 
 try:
     import httplib
@@ -18,8 +21,8 @@ from oauth2client.client import AccessTokenCredentials
 from slack import SlackClient
 from settings import SLACK_TOKEN, SLACK_CHANNEL
 
-
-# Explicitly tell the underlying HTTP transport library not to retry, since we are handling retry logic ourselves.
+# Explicitly tell the underlying HTTP transport library not to retry,
+# since we are handling retry logic ourselves.
 httplib2.RETRIES = 1
 
 # Maximum number of times to retry before giving up.
@@ -32,7 +35,8 @@ RETRIABLE_EXCEPTIONS = (
     httplib.CannotSendRequest, httplib.CannotSendHeader,
     httplib.ResponseNotReady, httplib.BadStatusLine)
 
-# Always retry when an apiclient.errors.HttpError with one of these status codes is raised.
+# Always retry when an apiclient.errors.HttpError
+# with one of these status codes is raised.
 RETRIABLE_STATUS_CODES = (500, 502, 503, 504)
 
 
@@ -70,18 +74,66 @@ class YoutubeClient(object):
             'youtube', 'v3', http=credentials.authorize(httplib2.Http())
         )
 
-    def get_authenticated_service_by_key(self, api_key):
-        return build(
-            'youtube', 'v3', developerKey=api_key
-        )
-
 
 class YoutubeRecording(object):
     def __init__(self, client_id, client_sercet, refresh_token):
         self.client = YoutubeClient(client_id, client_sercet, refresh_token)
         self.slack_client = SlackClient(SLACK_TOKEN, 'zoom2youtube')
 
-    def youtube_meta_data(self, options: dict):
+    def notify(self, video_url):
+        channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
+        try:
+            self.slack_client.send_message_to_channels(channels, video_url)
+        except Exception as e:
+            print('Sending error to slack: {}'.format(str(e)))
+
+    def upload_from_dir(self, video_dir: str):
+        assert os.path.isdir(video_dir), "Not found directory"
+        files = self._get_files_from_dir(video_dir, 'mp4')
+        for fname in files:
+            fpath = os.path.join(video_dir, fname)
+            if not os.path.exists(fpath):
+                continue
+            options = dict(
+                file=fpath,
+                title=os.path.splitext(os.path.basename(fname))[0],
+                privacyStatus='unlisted',
+            )
+            video_id = self.upload_video(options)
+            if not video_id:
+                continue
+
+            video_url = 'https://www.youtube.com/watch?v={}'.format(video_id)
+            print(video_url)
+            self.notify(video_url)
+            os.remove(fpath)
+
+    def upload_video(self, options: dict):
+        """
+        Options is Dict with
+
+        file - filepath to video
+        title - title of video
+        privacyStatus
+
+        :param options:
+        :return:
+        """
+        body = self._generate_meta_data(options)
+        connector = self.client.get_authenticated_service()
+        insert_request = connector \
+            .videos() \
+            .insert(part=",".join(body.keys()),
+                    body=body,
+                    media_body=MediaFileUpload(options.get('file'),
+                                               chunksize=-1,
+                                               resumable=True))
+        try:
+            return self._real_upload_video(insert_request)
+        except Exception as e:
+            print(str(e))
+
+    def _generate_meta_data(self, options: dict):
         return dict(
             snippet=dict(
                 title=options.get('title'),
@@ -91,18 +143,7 @@ class YoutubeRecording(object):
             )
         )
 
-    def initialize_upload(self, options: dict):
-        body = self.youtube_meta_data(options)
-        connector = self.client.get_authenticated_service()
-        insert_request = connector.videos().insert(
-            part=",".join(body.keys()), body=body,
-            media_body=MediaFileUpload(options.get('file'), chunksize=-1, resumable=True))
-        try:
-            return self.resumable_upload(insert_request)
-        except Exception as e:
-            print(str(e))
-
-    def resumable_upload(self, insert_request):
+    def _real_upload_video(self, insert_request):
         response = None
         error = None
         retry = 0
@@ -127,30 +168,11 @@ class YoutubeRecording(object):
                 sleep_seconds = random.random() * 2 ** retry
                 time.sleep(sleep_seconds)
 
-    def uploads_videos(self, video_dir):
-        files = YoutubeRecording.get_video_files(video_dir, 'mp4')
-        for fname in files:
-            fpath = os.path.join(video_dir, fname)
-            if not os.path.exists(fpath):
-                continue
-            options = dict(
-                file=fpath,
-                title=os.path.splitext(os.path.basename(fname))[0],
-                privacyStatus='unlisted',
-            )
-            video_id = self.initialize_upload(options)
-            video_url = 'https://www.youtube.com/watch?v={}'.format(video_id)
-            print(video_url)
-            self.notify(video_url)
-            os.remove(fpath)
-
-    def notify(self, video_url):
-        channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
-        try:
-            self.slack_client.send_message_to_channels(channels, video_url)
-        except Exception as e:
-            print('Sending error to slack: {}'.format(str(e)))
-
-    @staticmethod
-    def get_video_files(path: str, ext: str) -> list:
+    def _get_files_from_dir(self, path: str, ext: str) -> List[str]:
+        """
+        Return list of files with .ext
+        :param path:
+        :param ext:
+        :return:
+        """
         return [x for x in os.listdir(path) if x.endswith('.{}'.format(ext))]
