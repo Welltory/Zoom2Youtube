@@ -73,7 +73,8 @@ Zoom2Youtube будет полезен тем, кто регулярно исп�
 
 Для получения `GOOGLE_REFRESH_TOKEN` выполнить следующие действия:
 
-- открыть ссылку [https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code](https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code)
+- открыть ссылку [https://accounts.google.com/o/oauth2/auth?client_id=<GOOGLE_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code](https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code),
+  заменив в ссылке `<GOOGLE_CLIENT_ID>` на `GOOGLE_CLIENT_ID`, полученный на предыдущем шаге
 - выбрать нужный google акканут для которого нужно получить доступ
 - принять доступ
 - записать полученный токен в `.env` в параметр `GOOGLE_CODE`
