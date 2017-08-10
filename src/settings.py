@@ -29,4 +29,5 @@ VIDEO_DIR = join(BASE_DIR, 'video')
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
 SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
 
-DOWNLOADED_FILES = 'downloaded'
+DOWNLOADED_FILES = join(BASE_DIR, 'downloaded')
+LOCK_FILE = join(BASE_DIR, 'lock')

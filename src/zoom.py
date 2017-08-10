@@ -57,7 +57,7 @@ class ZoomRecording(object):
     def get_meetings(self):
         meetings = self.list().get('meetings', [])
         return filter(
-            lambda item: item.get('duration', 0) <= self.duration_min, meetings
+            lambda item: item.get('duration', 0) > self.duration_min, meetings
         )
 
     def download_meetings(self, email, password, save_dir, downloaded_files):
