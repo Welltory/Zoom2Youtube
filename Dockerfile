@@ -14,9 +14,6 @@ RUN apt-get install -y cron
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY cron/crontab cron/crontab
-RUN crontab cron/crontab
-
 WORKDIR /opt/app
 
 RUN touch /var/log/cron.log
