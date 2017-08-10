@@ -9,15 +9,14 @@ RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip
 RUN python3.6 -m pip install pip --upgrade
 RUN python3.6 -m pip install wheel
 
+RUN apt-get install -y cron
+
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
+COPY cron/crontab cron/crontab
+RUN crontab cron/crontab
+
 WORKDIR /opt/app
 
-ADD cron/crontab /etc/cron.d/zoom2youtube-cron
-
-RUN chmod 0644 /etc/cron.d/zoom2youtube-cron
-
 RUN touch /var/log/cron.log
-
-RUN apt-get install -y cron

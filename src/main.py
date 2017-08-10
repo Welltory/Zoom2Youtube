@@ -35,6 +35,7 @@ class lock(object):
 
 if __name__ == '__main__':
     with lock(LOCK_FILE):
+        print('Start...')
         # download videos from zoom
         zoom = ZoomRecording(ZOOM_KEY, ZOOM_SECRET, ZOOM_HOST_ID)
         zoom.download_meetings(
@@ -51,3 +52,4 @@ if __name__ == '__main__':
             GOOGLE_REFRESH_TOKEN
         )
         youtube.upload_from_dir(VIDEO_DIR)
+        print('End.')
