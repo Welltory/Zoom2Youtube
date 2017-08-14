@@ -1,3 +1,5 @@
+![gif](http://i.imgur.com/H8uv4Qm.gif)
+
 # Zoom2Youtube is a utility for transfer video recordings from the Zoom.us to YouTube
 
 В Welltory(https://welltory.com) мы проводим и записываем 3-4 видео встречи команд каждый день.

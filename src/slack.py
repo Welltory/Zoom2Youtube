@@ -24,6 +24,7 @@ class SlackClient(object):
     def send_message_to_channels(self, channels: list, text: str, **params):
         for channel in channels:
             self.chat_post_message(channel, text, **params)
+            print('Download link sent to channel: {}'.format(channel))
 
     def _request(self, method, params):
         url = urljoin(SlackClient.BASE_URL, method)

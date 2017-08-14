@@ -4,6 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c  "crontab cron/crontab && service cron restart && tail -f /var/log/cron.log"
+    command: bash -c  "crontab cron/crontab && service cron start && tail -f /var/log/cron.log"
     volumes:
      - .:/opt/app

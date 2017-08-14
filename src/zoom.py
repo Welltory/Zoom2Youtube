@@ -83,6 +83,7 @@ class ZoomRecording(object):
                 self._real_download_file(session,
                                          video_data.get('download_url'),
                                          save_path)
+                print('Downloaded the file: {}'.format(video_data.get('download_url')))
                 self._save_to_db(downloaded_files, rid)
                 # TODO Remove video processing
 

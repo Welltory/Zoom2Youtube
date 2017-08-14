@@ -104,7 +104,7 @@ class YoutubeRecording(object):
                 continue
 
             video_url = 'https://www.youtube.com/watch?v={}'.format(video_id)
-            print(video_url)
+            print('File uploaded: {}'.format(video_url))
             self.notify(video_url)
             os.remove(fpath)
 
@@ -147,10 +147,13 @@ class YoutubeRecording(object):
         response = None
         error = None
         retry = 0
+        print('File upload in progress...', end='')
         while response is None:
             try:
                 status, response = insert_request.next_chunk()
+                print('.', end='')
                 if 'id' in response:
+                    print()
                     return response['id']
             except HttpError as err:
                 if err.resp.status in RETRIABLE_STATUS_CODES:
