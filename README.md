@@ -1,4 +1,4 @@
-![gif](http://i.imgur.com/H8uv4Qm.gif)
+![gif](http://i.imgur.com/snCLd13.gif)
 
 # Zoom2Youtube is a utility for transfer video recordings from the Zoom.us to YouTube
 
