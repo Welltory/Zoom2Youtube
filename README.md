@@ -1,6 +1,4 @@
-![gif](http://i.imgur.com/snCLd13.gif)
-
-![Zoom2youtube show case](http://i.imgur.com/snCLd13.gif)
+![Zoom2youtube showcase](http://i.imgur.com/snCLd13.gif)
 
 # Zoom2Youtube is a utility for transfer video recordings from the Zoom.us to YouTube
 
