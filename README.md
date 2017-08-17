@@ -2,7 +2,7 @@
 
 ↓↓↓
 
-![Zoom2youtube slack notifications](http://i.imgur.com/QhJ8mj0.png)
+![Zoom2youtube slack notifications](http://i.imgur.com/2nxeNBG.png)
 
 # Zoom2Youtube is a utility for transferring video recordings from the Zoom.us to YouTube
 
