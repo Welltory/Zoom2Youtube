@@ -1,5 +1,9 @@
 ![Zoom2youtube showcase](http://i.imgur.com/snCLd13.gif)
 
+↓↓↓
+
+![Zoom2youtube slack notifications](http://i.imgur.com/QhJ8mj0.png)
+
 # Zoom2Youtube is a utility for transferring video recordings from the Zoom.us to YouTube
 
 At [Welltory](https://welltory.com), we hold and record 3-4 virtual meetings every day. The easiest way is to record meetings in [zoom.us](https://zoom.us), then upload them to YouTube where they can be accessed by anyone, from any device: phones, Chromecast, etc. We’ve automated video transfers from Zoom to YouTube, added notifications, and now every recording is automatically dropped into a Slack channel. We use privacy settings (**unlisted**) on YouTube to make sure people who aren’t on the team don’t have access to our meetings.
