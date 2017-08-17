@@ -20,7 +20,6 @@ You can reach us at github@welltory.com
 - Filter settings: will not upload videos under 15 minutes long to prevent uploads of accidental recordings
 
 
-
 Quick Start Guide
 =========
 
@@ -29,8 +28,8 @@ Step 1 - Set up Docker
 
 Install Docker and Docker-Compose
 
-- Docker installation instructions: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
-- Docker-compose installation instructions: https://docs.docker.com/compose/install/#alternative-install-options
+1. Docker installation instructions: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
+2. Docker-compose installation instructions: https://docs.docker.com/compose/install/#alternative-install-options
 
 Then create a Docker image. To do this, enter the command:
 
