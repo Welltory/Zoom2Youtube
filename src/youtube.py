@@ -80,10 +80,10 @@ class YoutubeRecording(object):
         self.client = YoutubeClient(client_id, client_sercet, refresh_token)
         self.slack_client = SlackClient(SLACK_TOKEN, 'zoom2youtube')
 
-    def notify(self, video_url):
+    def notify(self, message):
         channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
         try:
-            self.slack_client.send_message_to_channels(channels, video_url)
+            self.slack_client.send_message_to_channels(channels, message)
         except Exception as e:
             print('Sending error to slack: {}'.format(str(e)))
 
@@ -94,9 +94,10 @@ class YoutubeRecording(object):
             fpath = os.path.join(video_dir, fname)
             if not os.path.exists(fpath):
                 continue
+            title = os.path.splitext(os.path.basename(fname))[0]
             options = dict(
                 file=fpath,
-                title=os.path.splitext(os.path.basename(fname))[0],
+                title=title,
                 privacyStatus='unlisted',
             )
             video_id = self.upload_video(options)
@@ -105,7 +106,8 @@ class YoutubeRecording(object):
 
             video_url = 'https://www.youtube.com/watch?v={}'.format(video_id)
             print('File uploaded: {}'.format(video_url))
-            self.notify(video_url)
+            message = '{} - {}'.format(title, video_url)
+            self.notify(message)
             os.remove(fpath)
 
     def upload_video(self, options: dict):
