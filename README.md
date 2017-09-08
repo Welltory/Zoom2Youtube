@@ -1,14 +1,14 @@
-![gif](http://i.imgur.com/snCLd13.gif)
+![Zoom2youtube showcase](http://i.imgur.com/snCLd13.gif)
 
-# Zoom2Youtube is a utility for transfer video recordings from the Zoom.us to YouTube
+↓↓↓
 
-В Welltory(https://welltory.com) мы проводим и записываем 3-4 видео встречи команд каждый день.
-Удобнее всего записывать встречи в Zoom.us(https://zoom.us), а потом перекладывать их в YouTube
-и там просматривать, ведь каждый из нас по разному потребляет видео - кто со смартфона, кто с Chromecast или с ПК.
-Мы автоматизировали рутину трансфера видео из Zoom в YouTube, добавили к ней уведомления и теперь запись каждого
-митинга автоматически попадает к нам в Slack. Чтобы видео не было публичным на YouTube, мы всегда используем приватности - unlisted.
+![Zoom2youtube slack notifications](http://i.imgur.com/2nxeNBG.png)
 
-Проект написан на Python и запускается в Docker. Это упрощает первичное развертывание проекта.
+# Zoom2Youtube is a utility for transferring video recordings from the Zoom.us to YouTube
+
+At [Welltory](https://welltory.com), we hold and record 3-4 virtual meetings every day. The easiest way is to record meetings in [zoom.us](https://zoom.us), then upload them to YouTube where they can be accessed by anyone, from any device: phones, Chromecast, etc. We’ve automated video transfers from Zoom to YouTube, added notifications, and now every recording is automatically dropped into a Slack channel. We use privacy settings (**unlisted**) on YouTube to make sure people who aren’t on the team don’t have access to our meetings.
+
+The project is written in Python and launched in Docker. This simplifies the project’s initial deployment.
 
 # About
 
@@ -18,34 +18,34 @@ You can reach us at github@welltory.com
 
 # Features
 
-- автоматически скачать новое видео из Zoom
-- закачать это видео в YouTube с правами доступа unlisted
-- cкинуть ссылку на загруженное видео в Slack канал
-- имеет фильтр на скачку - не выгржуает видео короче 15 минут, чтобы не переливать случайные записи
+- Automatically download a new Zoom video
+- Upload the video to YouTube (privacy settings: unlisted)
+- Drop a link to the YouTube video into a Slack channel
+- Filter settings: will not upload videos under 15 minutes long to prevent uploads of accidental recordings
 
 
 Quick Start Guide
 =========
 
-Шаг 1 - установка Docker
+Step 1 - Set up Docker
 ------------------------
 
-Для использования утилиты необходимо установить Docker и Docker-Compose
+Install Docker and Docker-Compose
 
-- Инструкция по установке docker: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
-- Инструкция по установке docker-compose: https://docs.docker.com/compose/install/#alternative-install-options
+1. Docker installation instructions: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
+2. Docker-compose installation instructions: https://docs.docker.com/compose/install/#alternative-install-options
 
-Затем собрать Docker образ. Для этого необходимо выполнить команду
+Then create a Docker image. To do this, enter the command:
 
 ```
     $ make build
 ```
 
 
-Шаг 2 - настройка Zoom
+Step 2 - set up Zoom
 ----------------------
 
-Для работы приложения необходимо создать `.env` файл в корне проекта, указав в нем ключи, описанные ниже:
+You need to create a `.env` file in the root directory of the project, specifying the keys listed below:
 
     ZOOM_KEY
     ZOOM_SECRET
@@ -53,106 +53,104 @@ Quick Start Guide
     ZOOM_EMAIL
     ZOOM_PASSWORD
 
-Для получения этих ключей необходимо выполнить следующие шаги:
-- перейти по ссылке https://api.zoom.us/developer/api/credential
-- активировать API
-- записать `API Key` в `ZOOM_KEY`, `API Secret` в `ZOOM SECRET`
+To get the keys, follow these steps:
+1. Follow the link: https://api.zoom.us/developer/api/credential
+2. Enable the API
+3. Enter the `API Key` in `ZOOM_KEY`, `API Secret` in `ZOOM SECRET`
+4. Follow the link: https://api.zoom.us/developer/api/playground
+5. In the API Endpoint field, select https://api.zoom.us/v1/chat/list
+6. Enter the `Host User ID` in `ZOOM_HOST_ID`
 
-- перейти по ссылке https://api.zoom.us/developer/api/playground
-- в поле API Endpoint выбрать https://api.zoom.us/v1/chat/list
-- записать `Host User ID` в `ZOOM_HOST_ID`
 
-Шаг 3 - настройка Youtube
+Step 3 - Set up Youtube
 -------------------------
 
-В файл `.env` добавить ключи
+Add the following keys to the `.env` file
 
     GOOGLE_REFRESH_TOKEN
     GOOGLE_CLIENT_ID
     GOOGLE_CLIENT_SECRET
 
-Для получения этих ключей необходимо выполнить следующие шаги:
-- перейти в консоль разработчика https://console.developers.google.com/cloud-resource-manager
-- создать новый проект и перейдите в созданный проект
-- перейти по сслылке https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
-- активировать `YouTube Data API v3`
+To get the keys, follow these steps:
+1. Go to the developer console: https://console.developers.google.com/cloud-resource-manager
+2. Create a new project and go to the new project
+3. Follow the link: https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
+4. Turn on `YouTube Data API v3`
+5. Follow the link: https://console.developers.google.com/apis/credentials
+6. create OAuth client credentials.
+7. Select Other types or `Other` (depends on localization), create
+8. Enter `Client ID` in `GOOGLE_CLIENT_ID` and `Client Secret` in `GOOGLE_CLIENT_SECRET`
 
-- перейти по ссылке https://console.developers.google.com/apis/credentials
-- создать учетные данные для клиента OAuth.
-- выбрать `Другие типы` или `Other`(зависит от локализации), создать
-- записать `Client ID` в `GOOGLE_CLIENT_ID` и `Client Secret` в `GOOGLE_CLIENT_SECRET`
+To get the `GOOGLE_REFRESH_TOKEN` follow these steps:
 
-Для получения `GOOGLE_REFRESH_TOKEN` выполнить следующие действия:
-
-- открыть ссылку [https://accounts.google.com/o/oauth2/auth?client_id=<GOOGLE_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code](https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code),
-  заменив в ссылке `<GOOGLE_CLIENT_ID>` на `GOOGLE_CLIENT_ID`, полученный на предыдущем шаге
-- выбрать нужный google акканут для которого нужно получить доступ
-- принять доступ
-- записать полученный токен в `.env` в параметр `GOOGLE_CODE`
-- запустить скрипт в docker контейнере
+1. Follow the link: [https://accounts.google.com/o/oauth2/auth?client_id=<GOOGLE_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code](https://accounts.google.com/o/oauth2/auth?client_id=<MY_CLIENT_ID>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&access_type=offline&response_type=code), **replacing** `<GOOGLE_CLIENT_ID>` with the `GOOGLE_CLIENT_ID`, you got from the previous step
+2. Select the Google account you need access for
+3. Get access
+4. Enter the token in the .env file, in the `.env` in the `GOOGLE_CODE` field
+5. Run the script in docker container
 ```
     $ docker-compose run app bash
     $ python3.6 src/get_google_refresh_token.py`
 ```
-- полученный refresh token записать в файла `.env` в параметр `GOOGLE_REFRESH_TOKEN`
+6. Enter the refresh token in the `.env` file, in the `GOOGLE_REFRESH_TOKEN` field
 
-Шаг 4 - настройка Slack
+
+Step 4 - Set up Slack
 -----------------------
 
-В файл `.env` добавить ключи
+Add the following keys to the `.env` file
 
     SLACK_CHANNEL
     SLACK_TOKEN
 
-- записать через запятую получателей в `SLACK_CHANNEL`, например `SLACK_CHANNEL=#my_cannel,@my_user`
-- записать slack token в `SLACK_TOKEN`
+1. Enter the recipients (separated with commas) in `SLACK_CHANNEL`, for example `SLACK_CHANNEL=#my_cannel,@my_user`
+2. Enter the slack token in `SLACK_TOKEN`
 
 
-
-Шаг 5 - Проверка ключей
+Step 5 - Check keys
 -----------------------
 
-Для проверки, что все ключи были записаны в `.env` файл необходимо запустить скрипт в docker контейнере
+To make sure all the keys were entered into the `.env` file, run the script in docker container
 ```
     $ docker-compose run app bash
     $ python3.6 src/check_env.py
 ```
 
 
-Шаг 6 - запуск приложения
+Step 6 - Run the app
 -------------------------
 
-Запустить контейнер:
+Launch the container:
 ```
     $ make up
 ```
 
 
-Шаг 6 - альтернативный способ запуска приложения, через virtualenv
+Another way to run the app, through virtualenv
 ------------------------------------------------------------------------
 
-- Создать виртуальное окружение
+1. Create a virtual environment
 ```
     $ virtualenv venv -p /usr/bin/python3 --no-site-package
 ```
-- Активировать виртуальное окружение
+2. Activate virtual environment
 ```
     $ source venv/bin/activate
 ```
-- Установить зависимости
+3. Establish requirements
 ```
     $ pip install -r requirements.txt
 ```
-- Скопировать cron конфиг
+4. Copy cron config
 ```
     $ sudo cp cron/crontab /etc/cron.d/zoom2youtube-cron
 ```
-- Перезапустить крон
+5. Restart cron
 ```
     $  sudo service cron restart
 ```
 
-Пример .env файла
+Sample .env file
 -----------------
 
 ```
@@ -175,4 +173,4 @@ SLACK_TOKEN=AAAAAAAAAAAAA
 License
 -------
 
-The MIT License (MIT)
+[The MIT License (MIT)](https://en.wikipedia.org/wiki/MIT_License)
