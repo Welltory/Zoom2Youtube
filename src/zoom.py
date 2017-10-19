@@ -105,7 +105,8 @@ class ZoomRecording(object):
         start_time = datetime.strptime(
             meeting.get('start_time'), '%Y-%m-%dT%H:%M:%SZ'
         ).strftime('%d-%m-%Y')
-        return '{}{} {}.mp4'.format(meeting.get('topic'), prefix, start_time)
+        topic = meeting.get('topic').replace('/', '.')
+        return '{}{} {}.mp4'.format(topic, prefix, start_time)
 
     def _get_output_path(self, fname, save_dir):
         if not os.path.exists(save_dir):
