@@ -116,7 +116,7 @@ class ZoomRecording(object):
     def _real_download_file(self, session, url, fpath):
         response = session.get(url)
         if response.status_code == 200:
-            with open(fpath, 'wb') as f:
+            with open(fpath.encode('utf-8'), 'wb') as f:
                 f.write(response.content)
             return True
         return False
