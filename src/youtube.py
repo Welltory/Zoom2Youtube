@@ -3,6 +3,7 @@
 import os
 import random
 import time
+import re
 from typing import List
 
 import httplib2
@@ -18,8 +19,9 @@ from apiclient.errors import HttpError
 from apiclient.http import MediaFileUpload
 from oauth2client.client import AccessTokenCredentials
 
-from slack import SlackClient
-from settings import SLACK_TOKEN, SLACK_CHANNEL
+from helpers import import_by_string
+from settings import WEBHOOK_BACKEND_PIPELINES
+
 
 # Explicitly tell the underlying HTTP transport library not to retry,
 # since we are handling retry logic ourselves.
@@ -78,16 +80,12 @@ class YoutubeClient(object):
 class YoutubeRecording(object):
     def __init__(self, client_id, client_sercet, refresh_token):
         self.client = YoutubeClient(client_id, client_sercet, refresh_token)
-        self.slack_client = SlackClient(SLACK_TOKEN, 'zoom2youtube')
 
-    def notify(self, message):
-        channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
-        try:
-            self.slack_client.send_message_to_channels(channels, message)
-        except Exception as e:
-            print('Sending error to slack: {}'.format(str(e)))
+    def upload_from_dir(self, video_dir: str,
+                        privacy_status='unlisted',
+                        remove_file=True,
+                        notify=True):
 
-    def upload_from_dir(self, video_dir: str):
         assert os.path.isdir(video_dir), "Not found directory"
         files = self._get_files_from_dir(video_dir, 'mp4')
         for fname in files:
@@ -98,7 +96,7 @@ class YoutubeRecording(object):
             options = dict(
                 file=fpath,
                 title=title,
-                privacyStatus='unlisted',
+                privacyStatus=privacy_status,
             )
             video_id = self.upload_video(options)
             if not video_id:
@@ -106,9 +104,22 @@ class YoutubeRecording(object):
 
             video_url = 'https://www.youtube.com/watch?v={}'.format(video_id)
             print('File uploaded: {}'.format(video_url))
-            message = '{} - {}'.format(title, video_url)
-            self.notify(message)
-            os.remove(fpath)
+
+            if notify:
+                match = re.search(r'\d{2}-\d{2}-\d{4}', title)
+                date = match.group() if match else None
+                payload = {
+                    "success": True,
+                    "result": {
+                        "name": title,
+                        "link": video_url,
+                        "date": date,
+                    }
+                }
+                self.webhooks(payload=payload)
+
+            if remove_file:
+                os.remove(fpath)
 
     def upload_video(self, options: dict):
         """
@@ -181,3 +192,9 @@ class YoutubeRecording(object):
         :return:
         """
         return [x for x in os.listdir(path) if x.endswith('.{}'.format(ext))]
+
+    def webhooks(self, **kwargs):
+        kwargs['event_name'] = 'new_video'
+        for backend in WEBHOOK_BACKEND_PIPELINES:
+            klass = import_by_string(backend)
+            klass(kwargs=kwargs).start()

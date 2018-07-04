@@ -29,5 +29,13 @@ VIDEO_DIR = join(BASE_DIR, 'video')
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
 SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
 
+ZAPIER_URL = os.environ.get('ZAPIER_URL')
+
 DOWNLOADED_FILES = join(BASE_DIR, 'downloaded')
 LOCK_FILE = join(BASE_DIR, 'lock')
+
+
+WEBHOOK_BACKEND_PIPELINES = [
+    'webhooks.backends.slack.SlackClient',
+    'webhooks.backends.zapier.ZapierClient',
+]
