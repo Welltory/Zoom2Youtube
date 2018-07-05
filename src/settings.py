@@ -37,5 +37,9 @@ LOCK_FILE = join(BASE_DIR, 'lock')
 
 WEBHOOK_BACKEND_PIPELINES = [
     'webhooks.backends.slack.SlackClient',
-    'webhooks.backends.zapier.ZapierClient',
 ]
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
