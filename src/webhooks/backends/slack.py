@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
 
 from webhooks.backends.base import WebHookBase
-from settings import SLACK_CHANNEL, SLACK_TOKEN
+from settings import SLACK_CHANNEL, SLACK_TOKEN, SLACK_CHANNELS_UNIQUE_SETTINGS
 
 
 class SlackClient(WebHookBase):
@@ -10,8 +10,9 @@ class SlackClient(WebHookBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.chat_url = urljoin(SlackClient.BASE_URL, 'chat.postMessage')
+        self.chat_url = urljoin(self.BASE_URL, 'chat.postMessage')
         self.channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
+        self.channels_unique_settings = SLACK_CHANNELS_UNIQUE_SETTINGS
         self.bot_name = 'zoom2youtube'
         self.token = SLACK_TOKEN
 
@@ -29,6 +30,14 @@ class SlackClient(WebHookBase):
         for channel in self.channels:
             data['channel'] = channel
             self._request(url, method=method, payload=data, headers=headers)
+
+        for video_name, channels in self.channels_unique_settings.items():
+            if video_name in self.payload['result']['name']:
+                for channel in channels:
+                    data['channel'] = channel
+                    self._request(
+                        url, method=method, payload=data, headers=headers
+                    )
 
     def new_video(self, **kwargs):
         name = self.payload['result']['name']

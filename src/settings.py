@@ -28,6 +28,7 @@ VIDEO_DIR = join(BASE_DIR, 'video')
 
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
 SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+SLACK_CHANNELS_UNIQUE_SETTINGS = {}  # Example: {'lesson_1': ['#main', '#lessons']}
 
 ZAPIER_URL = os.environ.get('ZAPIER_URL')
 
