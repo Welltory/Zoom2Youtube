@@ -40,6 +40,8 @@ WEBHOOK_BACKEND_PIPELINES = [
     'webhooks.backends.slack.SlackClient',
 ]
 
+MIN_DURATION = os.environ.get('MIN_DURATION') or 10  # minute
+
 try:
     from local_settings import *
 except ImportError:

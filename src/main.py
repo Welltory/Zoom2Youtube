@@ -13,7 +13,8 @@ from settings import (
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
     DOWNLOADED_FILES,
-    LOCK_FILE
+    LOCK_FILE,
+    MIN_DURATION,
 )
 from youtube import YoutubeRecording
 from zoom import ZoomRecording
@@ -37,7 +38,13 @@ if __name__ == '__main__':
     with lock(LOCK_FILE):
         print('Start...')
         # download videos from zoom
-        zoom = ZoomRecording(ZOOM_KEY, ZOOM_SECRET, ZOOM_HOST_ID)
+        zoom = ZoomRecording(
+            ZOOM_KEY,
+            ZOOM_SECRET,
+            ZOOM_HOST_ID,
+            duration_min=MIN_DURATION,
+        )
+
         zoom.download_meetings(
             ZOOM_EMAIL,
             ZOOM_PASSWORD,

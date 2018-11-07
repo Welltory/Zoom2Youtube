@@ -44,7 +44,7 @@ class ZoomRecording(object):
         self.client = ZoomClient(api_key, api_secret)
         self.host_id = host_id
 
-        self.duration_min = kwargs.get('duration_min', 15)
+        self.duration_min = kwargs.get('duration_min', 10)
 
     def list(self):
         response = self.client.post("/recording/list", host_id=self.host_id)
