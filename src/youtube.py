@@ -14,6 +14,8 @@ try:
 except ImportError:
     import http.client as httplib
 
+from subprocess import call
+
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from apiclient.http import MediaFileUpload
@@ -77,9 +79,25 @@ class YoutubeClient(object):
         )
 
 
+class FFMpegHandler(object):
+
+    def start(self, video_dir, fpath):
+        out_fpath = os.path.join(video_dir, 'out.mp4')
+        call([
+            'ffmpeg', '-i', fpath, '-crf', '18', '-preset', 'veryfast', '-c:a', 'copy', out_fpath
+        ])
+        os.remove(fpath)
+        os.rename(out_fpath, fpath)
+
+
 class YoutubeRecording(object):
-    def __init__(self, client_id, client_sercet, refresh_token):
+    def __init__(self,
+                 client_id,
+                 client_sercet,
+                 refresh_token,
+                 video_handler_class=FFMpegHandler):
         self.client = YoutubeClient(client_id, client_sercet, refresh_token)
+        self.video_handler = video_handler_class()
 
     def upload_from_dir(self, video_dir: str,
                         privacy_status='unlisted',
@@ -92,6 +110,10 @@ class YoutubeRecording(object):
             fpath = os.path.join(video_dir, fname)
             if not os.path.exists(fpath):
                 continue
+
+            if self.video_handler:
+                self.video_handler.start(video_dir, fpath)
+
             title = os.path.splitext(os.path.basename(fname))[0]
             options = dict(
                 file=fpath,

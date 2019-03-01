@@ -15,6 +15,8 @@ from settings import (
     DOWNLOADED_FILES,
     LOCK_FILE,
     MIN_DURATION,
+    FILTER_MEETING_BY_NAME,
+    ONLY_MEETING_NAMES,
 )
 from youtube import YoutubeRecording
 from zoom import ZoomRecording
@@ -43,6 +45,8 @@ if __name__ == '__main__':
             ZOOM_SECRET,
             ZOOM_HOST_ID,
             duration_min=MIN_DURATION,
+            filter_meeting_by_name=FILTER_MEETING_BY_NAME,
+            only_meeting_names=ONLY_MEETING_NAMES,
         )
 
         zoom.download_meetings(

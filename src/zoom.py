@@ -40,11 +40,20 @@ class ZoomClient(object):
 
 
 class ZoomRecording(object):
-    def __init__(self, api_key, api_secret, host_id, **kwargs):
+    def __init__(self,
+                 api_key,
+                 api_secret,
+                 host_id,
+                 duration_min=10,
+                 filter_meeting_by_name=False,
+                 only_meeting_names=None):
+
         self.client = ZoomClient(api_key, api_secret)
         self.host_id = host_id
 
-        self.duration_min = kwargs.get('duration_min', 10)
+        self.duration_min = duration_min
+        self.filter_meeting_by_name = filter_meeting_by_name
+        self.only_meeting_names = only_meeting_names or []
 
     def list(self):
         response = self.client.post("/recording/list", host_id=self.host_id)
@@ -55,10 +64,17 @@ class ZoomRecording(object):
         return response.json()
 
     def get_meetings(self):
-        meetings = self.list().get('meetings', [])
-        return filter(
-            lambda item: item.get('duration', 0) > self.duration_min, meetings
-        )
+        return self.list().get('meetings', [])
+
+    def filter_meetings(self, mettings):
+        for m in mettings:
+            if m.get("duration", 0) < self.duration_min:
+                continue
+
+            if self.filter_meeting_by_name and m.get("topic") not in self.only_meeting_names:
+                continue
+
+            yield m
 
     def download_meetings(self, email, password, save_dir, downloaded_files):
         session, response = self.client.session(email, password)
@@ -66,7 +82,9 @@ class ZoomRecording(object):
             session.close()
             return
 
-        for meeting in self.get_meetings():
+        meetings = self.get_meetings()
+        meetings = self.filter_meetings(meetings)
+        for meeting in meetings:
             recording_files = meeting.get('recording_files', [])
             for i, video_data in enumerate(recording_files):
                 rid = video_data.get('id')

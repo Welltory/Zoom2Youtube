@@ -5,7 +5,6 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-
 dotenv_path = join(dirname(dirname(__file__)), '.env')
 load_dotenv(dotenv_path)
 
@@ -41,6 +40,15 @@ WEBHOOK_BACKEND_PIPELINES = [
 ]
 
 MIN_DURATION = os.environ.get('MIN_DURATION') or 10  # minute
+
+FILTER_MEETING_BY_NAME = os.environ.get(
+    "FILTER_MEETING_BY_NAME", "false"
+).lower() in ["true", "on", "1"]
+
+
+ONLY_MEETING_NAMES = [
+    n.strip() for n in os.environ.get("ONLY_MEETING_NAMES", "").split(",")
+]
 
 try:
     from local_settings import *
