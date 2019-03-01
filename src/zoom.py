@@ -66,8 +66,8 @@ class ZoomRecording(object):
     def get_meetings(self):
         return self.list().get('meetings', [])
 
-    def filter_meetings(self, mettings):
-        for m in mettings:
+    def filter_meetings(self, meetings):
+        for m in meetings:
             if m.get("duration", 0) < self.duration_min:
                 continue
 
