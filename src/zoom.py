@@ -85,12 +85,12 @@ class ZoomRecording(object):
         meetings = self.get_meetings()
         meetings = self.filter_meetings(meetings)
         for meeting in meetings:
-            recording_files = meeting.get('recording_files', [])
+            recording_files = filter(
+                lambda x: x.get("file_type") == "MP4",
+                meeting.get('recording_files', [])
+            )
             for i, video_data in enumerate(recording_files):
                 rid = video_data.get('id')
-
-                if video_data.get('file_type') != 'MP4':
-                    continue
 
                 if not self._is_downloaded(downloaded_files, rid):
                     continue
