@@ -115,6 +115,9 @@ class YoutubeRecording(object):
                 self.video_handler.start(video_dir, fpath)
 
             title = os.path.splitext(os.path.basename(fname))[0]
+
+            title = self.modify_title(title)
+
             options = dict(
                 file=fpath,
                 title=title,
@@ -140,8 +143,8 @@ class YoutubeRecording(object):
                 }
                 self.webhooks(payload=payload)
 
-            if remove_file:
-                os.remove(fpath)
+    def modify_title(self, title):
+        return title.replace(">", "").replace("<", "")
 
     def upload_video(self, options: dict):
         """
