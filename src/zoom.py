@@ -71,7 +71,7 @@ class ZoomRecording(object):
             if m.get("duration", 0) < self.duration_min:
                 continue
 
-            if self.filter_meeting_by_name and m.get("topic") not in self.only_meeting_names:
+            if self.filter_meeting_by_name and m.get("topic").strip() not in self.only_meeting_names:
                 continue
 
             yield m
