@@ -143,6 +143,9 @@ class YoutubeRecording(object):
                 }
                 self.webhooks(payload=payload)
 
+            if remove_file:
+                os.remove(fpath)
+
     def modify_title(self, title):
         return title.replace(">", "").replace("<", "")
 
