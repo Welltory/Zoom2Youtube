@@ -1,17 +1,9 @@
-FROM ubuntu:latest
+FROM python:3.7.3-slim-stretch
 
-RUN apt-get update
-RUN apt-get install -y software-properties-common vim
-RUN add-apt-repository ppa:jonathonf/python-3.6
-RUN apt-get update
-RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip
-
-RUN add-apt-repository ppa:jonathonf/ffmpeg-3
-RUN apt-get update
-RUN apt-get install -y ffmpeg libav-tools
-
-RUN python3.6 -m pip install pip --upgrade
-RUN python3.6 -m pip install wheel
+RUN apt-get update && apt-get install -y python3-dev build-essential curl jq && pip install -U pip && pip install -U pip-tools
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:jonathonf/ffmpeg-4
+RUN apt-get install -y ffmpeg
 
 RUN apt-get install -y cron
 
