@@ -44,6 +44,8 @@ ONLY_MEETING_NAMES = [
     n.strip() for n in os.environ.get("ONLY_MEETING_NAMES", "").split(",")
 ]
 
+ENABLE_VIDEO_CONVERTING = os.environ.get("ENABLE_VIDEO_CONVERTING", "off") == "on"
+
 try:
     from local_settings import *
 except ImportError:

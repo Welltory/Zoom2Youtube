@@ -23,6 +23,7 @@ from oauth2client.client import AccessTokenCredentials
 
 from helpers import import_by_string
 from settings import WEBHOOK_BACKEND_PIPELINES
+from settings import ENABLE_VIDEO_CONVERTING
 
 
 # Explicitly tell the underlying HTTP transport library not to retry,
@@ -111,7 +112,7 @@ class YoutubeRecording(object):
             if not os.path.exists(fpath):
                 continue
 
-            if self.video_handler:
+            if ENABLE_VIDEO_CONVERTING:
                 self.video_handler.start(video_dir, fpath)
 
             title = os.path.splitext(os.path.basename(fname))[0]
