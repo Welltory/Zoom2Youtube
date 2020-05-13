@@ -33,7 +33,7 @@ WEBHOOK_BACKEND_PIPELINES = [
     'webhooks.backends.slack.SlackClient',
 ]
 
-MIN_DURATION = os.environ.get('MIN_DURATION') or 10  # minute
+MIN_DURATION = int(os.environ.get('MIN_DURATION') or 10)  # minute
 
 FILTER_MEETING_BY_NAME = os.environ.get(
     "FILTER_MEETING_BY_NAME", "false"
