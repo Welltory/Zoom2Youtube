@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import settings
 
 
@@ -8,11 +7,9 @@ def check_keys():
                 'GOOGLE_CLIENT_ID',
                 'GOOGLE_CLIENT_SECRET',
                 'GOOGLE_CODE',
-                'ZOOM_KEY',
-                'ZOOM_SECRET',
-                'ZOOM_HOST_ID',
                 'ZOOM_EMAIL',
-                'ZOOM_PASSWORD',
+                'ZOOM_API_KEY',
+                'ZOOM_API_SECRET',
                 'VIDEO_DIR',
                 'SLACK_TOKEN',
                 'SLACK_CHANNEL'):

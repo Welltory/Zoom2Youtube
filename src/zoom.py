@@ -1,70 +1,78 @@
-# -*- coding: utf-8 -*-
-
 import os.path
+
 from datetime import datetime
 from urllib.parse import urljoin
 
 import requests
 
+from jwt_auth import make_http_headers
+from jwt_auth import generate_access_token
 
-class ZoomClient(object):
-    BASE_URL = 'https://api.zoom.us/v1/'
-    SIGNIN_URL = 'https://api.zoom.us/signin'
 
-    def __init__(self, api_key, api_secret):
+class ZoomJWTClient(object):
+
+    BASE_URL = 'https://api.zoom.us/v2/'
+
+    def __init__(
+            self,
+            api_key: str,
+            api_secret: str,
+            token_exp_delta: int
+    ):
         self.api_key = api_key
         self.api_secret = api_secret
+        self.token_exp_delta = token_exp_delta
 
-    def post(self, api_url, **kwargs):
-        data = {'api_key': self.api_key, 'api_secret': self.api_secret}
-        if kwargs:
-            data.update(kwargs)
-        url = self._join_url(api_url)
-        response = requests.post(url, data)
-        return response
+        self._setup()
 
-    def session(self, email, password):
-        session = requests.Session()
-        session.headers.update({
-            'content-type': 'application/x-www-form-urlencoded'
-        })
-        response = session.post(
-            ZoomClient.SIGNIN_URL, data={'email': email, 'password': password}
+    def _setup(self):
+        self.access_token = generate_access_token(
+            self.api_key,
+            self.api_secret,
+            self.token_exp_delta
         )
-        return session, response
+        self.http_headers = make_http_headers(self.access_token)
 
     def _join_url(self, path):
         if path.startswith('/'):
             path = path[1:]
-        return urljoin(ZoomClient.BASE_URL, path)
+        return urljoin(self.BASE_URL, path)
+
+    def get(self, uri: str, **kwargs):
+        url = self._join_url(uri)
+        resp = requests.get(url, headers=self.http_headers)
+        return resp
 
 
 class ZoomRecording(object):
-    def __init__(self,
-                 api_key,
-                 api_secret,
-                 host_id,
-                 duration_min=10,
-                 filter_meeting_by_name=False,
-                 only_meeting_names=None):
+    def __init__(
+            self,
+            client,
+            email,
+            duration_min=10,
+            filter_meeting_by_name=False,
+            only_meeting_names=None
+    ):
 
-        self.client = ZoomClient(api_key, api_secret)
-        self.host_id = host_id
+        self.client = client
+        self.email = email
 
         self.duration_min = duration_min
         self.filter_meeting_by_name = filter_meeting_by_name
         self.only_meeting_names = only_meeting_names or []
 
-    def list(self):
-        response = self.client.post("/recording/list", host_id=self.host_id)
-        return response.json()
-
-    def delete(self, meeting_id):
-        response = self.client.post("/recording/delete", meeting_id=meeting_id)
-        return response.json()
-
     def get_meetings(self):
-        return self.list().get('meetings', [])
+        resp = self.client.get("users/{}/recordings".format(self.email))
+        if resp.status_code != 200:
+            print(
+                "Get meeting status error: {}. Detail: {}".format(
+                    resp.status_code, resp.content
+                )
+            )
+            return None
+
+        data = resp.json()
+        return data.get('meetings', [])
 
     def filter_meetings(self, meetings):
         for m in meetings:
@@ -76,12 +84,7 @@ class ZoomRecording(object):
 
             yield m
 
-    def download_meetings(self, email, password, save_dir, downloaded_files):
-        session, response = self.client.session(email, password)
-        if response.status_code != 200:
-            session.close()
-            return
-
+    def download_meetings(self, save_dir, downloaded_files):
         meetings = self.get_meetings()
         meetings = self.filter_meetings(meetings)
         for meeting in meetings:
@@ -98,14 +101,17 @@ class ZoomRecording(object):
                 prefix = i or ''
                 filename = self._get_output_filename(meeting, prefix)
                 save_path = self._get_output_path(filename, save_dir)
-                self._real_download_file(session,
-                                         video_data.get('download_url'),
-                                         save_path)
+
+                download_url = video_data.get('download_url')
+                download_url += "?access_token={}".format(self.client.access_token)
+                self._real_download_file(
+                    download_url,
+                    save_path
+                )
+
                 print('Downloaded the file: {}'.format(video_data.get('download_url')))
                 self._save_to_db(downloaded_files, rid)
                 # TODO Remove video processing
-
-        session.close()
 
     def _is_downloaded(self, downloaded_files, recording_id):
         if not os.path.exists(downloaded_files):
@@ -131,8 +137,8 @@ class ZoomRecording(object):
             os.makedirs(save_dir)
         return os.path.join(save_dir, fname)
 
-    def _real_download_file(self, session, url, fpath):
-        response = session.get(url)
+    def _real_download_file(self, url, fpath):
+        response = requests.get(url)
         if response.status_code == 200:
             with open(fpath.encode('utf-8'), 'wb') as f:
                 f.write(response.content)

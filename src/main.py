@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import os.path
 
 from settings import (
-    ZOOM_KEY,
-    ZOOM_SECRET,
-    ZOOM_HOST_ID,
     ZOOM_EMAIL,
-    ZOOM_PASSWORD,
     VIDEO_DIR,
     GOOGLE_REFRESH_TOKEN,
     GOOGLE_CLIENT_ID,
@@ -17,9 +11,12 @@ from settings import (
     MIN_DURATION,
     FILTER_MEETING_BY_NAME,
     ONLY_MEETING_NAMES,
+    ZOOM_API_KEY,
+    ZOOM_API_SECRET,
 )
 from youtube import YoutubeRecording
 from zoom import ZoomRecording
+from zoom import ZoomJWTClient
 
 
 class lock(object):
@@ -40,18 +37,22 @@ if __name__ == '__main__':
     with lock(LOCK_FILE):
         print('Start...')
         # download videos from zoom
+
+        zoom_client = ZoomJWTClient(
+            ZOOM_API_KEY,
+            ZOOM_API_SECRET,
+            86400
+        )
+
         zoom = ZoomRecording(
-            ZOOM_KEY,
-            ZOOM_SECRET,
-            ZOOM_HOST_ID,
+            zoom_client,
+            ZOOM_EMAIL,
             duration_min=MIN_DURATION,
             filter_meeting_by_name=FILTER_MEETING_BY_NAME,
             only_meeting_names=ONLY_MEETING_NAMES,
         )
 
         zoom.download_meetings(
-            ZOOM_EMAIL,
-            ZOOM_PASSWORD,
             VIDEO_DIR,
             DOWNLOADED_FILES
         )
