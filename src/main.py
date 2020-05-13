@@ -13,6 +13,7 @@ from settings import (
     ONLY_MEETING_NAMES,
     ZOOM_API_KEY,
     ZOOM_API_SECRET,
+    ZOOM_FROM_DAY_DELTA,
 )
 from youtube import YoutubeRecording
 from zoom import ZoomRecording
@@ -50,6 +51,7 @@ if __name__ == '__main__':
             duration_min=MIN_DURATION,
             filter_meeting_by_name=FILTER_MEETING_BY_NAME,
             only_meeting_names=ONLY_MEETING_NAMES,
+            from_day_delta=ZOOM_FROM_DAY_DELTA,
         )
 
         zoom.download_meetings(

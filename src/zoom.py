@@ -1,6 +1,7 @@
 import os.path
 
 from datetime import datetime
+from datetime import timedelta
 from urllib.parse import urljoin
 
 import requests
@@ -40,7 +41,7 @@ class ZoomJWTClient(object):
 
     def get(self, uri: str, **kwargs):
         url = self._join_url(uri)
-        resp = requests.get(url, headers=self.http_headers)
+        resp = requests.get(url, headers=self.http_headers, timeout=60)
         return resp
 
 
@@ -51,7 +52,8 @@ class ZoomRecording(object):
             email,
             duration_min=10,
             filter_meeting_by_name=False,
-            only_meeting_names=None
+            only_meeting_names=None,
+            from_day_delta=7,
     ):
 
         self.client = client
@@ -60,9 +62,14 @@ class ZoomRecording(object):
         self.duration_min = duration_min
         self.filter_meeting_by_name = filter_meeting_by_name
         self.only_meeting_names = only_meeting_names or []
+        self.from_day_delta = from_day_delta
 
     def get_meetings(self):
-        resp = self.client.get("users/{}/recordings".format(self.email))
+        uri = "users/{}/recordings?from={}".format(
+            self.email,
+            (datetime.utcnow() - timedelta(days=self.from_day_delta)).strftime("%Y-%m-%d")
+        )
+        resp = self.client.get(uri)
         if resp.status_code != 200:
             print(
                 "Get meeting status error: {}. Detail: {}".format(

@@ -16,6 +16,7 @@ GOOGLE_CODE = os.environ.get('GOOGLE_CODE')
 ZOOM_EMAIL = os.environ.get('ZOOM_EMAIL')
 ZOOM_API_KEY = os.environ.get("ZOOM_API_KEY")
 ZOOM_API_SECRET = os.environ.get("ZOOM_API_SECRET")
+ZOOM_FROM_DAY_DELTA = int(os.environ.get("ZOOM_FROM_DAY_DELTA") or 7)
 
 VIDEO_DIR = join(BASE_DIR, 'video')
 
