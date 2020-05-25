@@ -47,19 +47,14 @@ Step 2 - set up Zoom
 
 You need to create a `.env` file in the root directory of the project, specifying the keys listed below:
 
-    ZOOM_KEY
-    ZOOM_SECRET
-    ZOOM_HOST_ID
+    ZOOM_API_KEY
+    ZOOM_API_SECRET
     ZOOM_EMAIL
-    ZOOM_PASSWORD
 
 To get the keys, follow these steps:
-1. Follow the link: https://api.zoom.us/developer/api/credential
-2. Enable the API
-3. Enter the `API Key` in `ZOOM_KEY`, `API Secret` in `ZOOM SECRET`
-4. Follow the link: https://api.zoom.us/developer/api/playground
-5. In the API Endpoint field, select https://api.zoom.us/v1/chat/list
-6. Enter the `Host User ID` in `ZOOM_HOST_ID`
+1. Follow the link: https://marketplace.zoom.us/docs/guides/build/jwt-app
+2. Create JWT app
+3. Enter the `API Key` in `ZOOM_API_KEY`, `API Secret` in `ZOOM_API_SECRET`
 
 
 Step 3 - Set up Youtube
@@ -154,11 +149,9 @@ Sample .env file
 -----------------
 
 ```
-ZOOM_KEY=AAAAAAAAAAAAAAA
-ZOOM_SECRET=BBBBBBBBBBBB
-ZOOM_HOST_ID=CCCCCCCCCCC
-ZOOM_EMAIL=mail@gmail.com
-ZOOM_PASSWORD=user_password
+ZOOM_API_KEY=AAAAAAAAAAAAAAA
+ZOOM_API_SECRET=BBBBBBBBBBBB
+ZOOM_EMAIL=test@test.com
 
 GOOGLE_CLIENT_ID=AAAAAAAAAAAAAA.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=BBBBBBBBBBBBBb
