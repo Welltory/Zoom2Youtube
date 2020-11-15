@@ -54,6 +54,7 @@ class ZoomRecording(object):
             filter_meeting_by_name=False,
             only_meeting_names=None,
             from_day_delta=7,
+            page_size=10,
     ):
 
         self.client = client
@@ -65,9 +66,10 @@ class ZoomRecording(object):
         self.from_day_delta = from_day_delta
 
     def get_meetings(self):
-        uri = "users/{}/recordings?from={}".format(
+        uri = "users/{}/recordings?from={}&page_size={}".format(
             self.email,
-            (datetime.utcnow() - timedelta(days=self.from_day_delta)).strftime("%Y-%m-%d")
+            (datetime.utcnow() - timedelta(days=self.from_day_delta)).strftime("%Y-%m-%d"),
+            page_size
         )
         resp = self.client.get(uri)
         if resp.status_code != 200:
