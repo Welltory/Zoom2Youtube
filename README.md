@@ -164,7 +164,7 @@ SLACK_TOKEN=AAAAAAAAAAAAA
 ```
 
 ```
-// Extra configs
+// Extra/optional configs
 ZOOM_FROM_DAY_DELTA=7
 ZOOM_PAGE_SIZE=10
 ```
