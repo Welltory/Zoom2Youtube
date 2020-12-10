@@ -93,6 +93,10 @@ class ZoomRecording(object):
 
     def download_meetings(self, save_dir, downloaded_files):
         meetings = self.get_meetings()
+        if not meetings:
+            print("Does not exists meetings.")
+            return
+
         meetings = self.filter_meetings(meetings)
         for meeting in meetings:
             recording_files = filter(
