@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
 
 from webhooks.backends.base import WebHookBase
-from settings import SLACK_CHANNEL, SLACK_TOKEN, SLACK_CHANNELS_UNIQUE_SETTINGS
+from settings import SLACK_CHANNEL, SLACK_TOKEN, SLACK_CHANNELS_UNIQUE_SETTINGS, NOT_SEND_MSG_TO_PUBLIC_CHANNEL_FOR_MEETINGS
 
 
 class SlackClient(WebHookBase):
@@ -27,9 +27,11 @@ class SlackClient(WebHookBase):
         url = self.get_url(event_name, **kwargs)
         method = self.get_request_method(event_name, **kwargs)
         headers = {'content-type': 'application/x-www-form-urlencoded'}
-        for channel in self.channels:
-            data['channel'] = channel
-            self._request(url, method=method, payload=data, headers=headers)
+
+        if self.payload['result']['name'] not in NOT_SEND_MSG_TO_PUBLIC_CHANNEL_FOR_MEETINGS:
+            for channel in self.channels:
+                data['channel'] = channel
+                self._request(url, method=method, payload=data, headers=headers)
 
         for video_name, channels in self.channels_unique_settings.items():
             if video_name in self.payload['result']['name']:
