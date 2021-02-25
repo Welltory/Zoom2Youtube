@@ -14,6 +14,7 @@ from settings import (
     ZOOM_API_KEY,
     ZOOM_API_SECRET,
     ZOOM_FROM_DAY_DELTA,
+    ZOOM_PAGE_SIZE,
 )
 from youtube import YoutubeRecording
 from zoom import ZoomRecording
@@ -45,19 +46,26 @@ if __name__ == '__main__':
             86400
         )
 
-        zoom = ZoomRecording(
-            zoom_client,
-            ZOOM_EMAIL,
-            duration_min=MIN_DURATION,
-            filter_meeting_by_name=FILTER_MEETING_BY_NAME,
-            only_meeting_names=ONLY_MEETING_NAMES,
-            from_day_delta=ZOOM_FROM_DAY_DELTA,
-        )
+        for email in ZOOM_EMAIL.split(','):
+            print(
+                "Using email : {}".format(
+                    email
+                )
+            )
+            zoom = ZoomRecording(
+                zoom_client,
+                email,
+                duration_min=MIN_DURATION,
+                filter_meeting_by_name=FILTER_MEETING_BY_NAME,
+                only_meeting_names=ONLY_MEETING_NAMES,
+                from_day_delta=ZOOM_FROM_DAY_DELTA,
+                page_size=ZOOM_PAGE_SIZE
+            )
 
-        zoom.download_meetings(
-            VIDEO_DIR,
-            DOWNLOADED_FILES
-        )
+            zoom.download_meetings(
+                VIDEO_DIR,
+                DOWNLOADED_FILES
+            )
 
         # upload videos to youtube
         youtube = YoutubeRecording(
