@@ -34,4 +34,8 @@ def make_jwt_payload(api_key: str, token_exp_delta: int) -> dict:
 
 def generate_jwt_token(payload: dict, api_secret: str) -> str:
     encoded = jwt.encode(payload, api_secret, algorithm='HS256')
-    return encoded.decode()
+    if isinstance(encoded, bytes):
+        # For PyJWT <= 1.7.1
+        return encoded.decode()
+    # For PyJWT >= 2.0.0a1
+    return encoded
