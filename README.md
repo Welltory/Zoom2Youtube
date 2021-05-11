@@ -145,6 +145,25 @@ Another way to run the app, through virtualenv
     $  sudo service cron restart
 ```
 
+Yet another way to run the app, as a package
+------------------------------------------------------------------------
+
+1. Use an virtualenv or isolation tactic you prefer
+2. Install as a package
+```
+    $ pip install git+https://github.com/patcon/Zoom2YouTube.git@packaging#egg=zoom2youtube
+```
+3. Export any required envvars directly
+```
+    $ export ZOOM_API_KEY=xxxxx
+    $ export ZOOM_API_SECRET=xxxxx
+    ...
+```
+4. Run the command
+```
+    $ zoom2youtube
+```
+
 Sample .env file
 -----------------
 
