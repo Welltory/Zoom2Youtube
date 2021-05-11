@@ -151,7 +151,7 @@ Yet another way to run the app, as a package
 1. Use an virtualenv or isolation tactic you prefer
 2. Install as a package
 ```
-    $ pip install git+https://github.com/patcon/Zoom2YouTube.git@packaging#egg=zoom2youtube
+    $ pip install git+https://github.com/patcon/Zoom2YouTube.git@packaged#egg=zoom2youtube
 ```
 3. Export any required envvars directly
 ```
