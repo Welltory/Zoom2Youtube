@@ -35,7 +35,7 @@ class lock(object):
             os.remove(self._lock_file)
 
 
-if __name__ == '__main__':
+def main():
     with lock(LOCK_FILE):
         print('Start...')
         # download videos from zoom
@@ -75,3 +75,7 @@ if __name__ == '__main__':
         )
         youtube.upload_from_dir(VIDEO_DIR)
         print('End.')
+
+
+if __name__ == '__main__':
+    main()
