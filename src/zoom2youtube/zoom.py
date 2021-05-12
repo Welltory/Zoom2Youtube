@@ -69,7 +69,7 @@ class ZoomRecording(object):
         uri = "users/{}/recordings?from={}&page_size={}".format(
             self.email,
             (datetime.utcnow() - timedelta(days=self.from_day_delta)).strftime("%Y-%m-%d"),
-            page_size
+            self.page_size
         )
         resp = self.client.get(uri)
         if resp.status_code != 200:

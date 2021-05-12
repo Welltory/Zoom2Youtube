@@ -18,3 +18,10 @@ check-env:
 
 get-google-refresh-token:
 		docker-compose run app python3.6 src/get_google_refresh_token.py
+
+prepare-pipenv:
+		pip install pipenv
+		pipenv install --dev
+
+sync-setup-py: prepare-pipenv
+		pipenv run pipenv-setup sync

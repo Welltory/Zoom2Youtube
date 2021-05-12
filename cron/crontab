@@ -1,1 +1,1 @@
-*/5 * * * * /usr/local/bin/python3.7 /opt/app/src/main.py >> /var/log/cron.log 2>&1
+*/5 * * * * /usr/local/bin/python3.7 /opt/app/src/zoom2youtube/main.py >> /var/log/cron.log 2>&1

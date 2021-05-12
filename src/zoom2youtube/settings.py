@@ -17,6 +17,7 @@ ZOOM_EMAIL = os.environ.get('ZOOM_EMAIL')
 ZOOM_API_KEY = os.environ.get("ZOOM_API_KEY")
 ZOOM_API_SECRET = os.environ.get("ZOOM_API_SECRET")
 ZOOM_FROM_DAY_DELTA = int(os.environ.get("ZOOM_FROM_DAY_DELTA") or 7)
+ZOOM_PAGE_SIZE = int(os.environ.get("ZOOM_PAGE_SIZE") or 10)
 
 VIDEO_DIR = join(BASE_DIR, 'video')
 
