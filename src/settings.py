@@ -33,10 +33,8 @@ ZAPIER_URL = os.environ.get('ZAPIER_URL')
 DOWNLOADED_FILES = join(BASE_DIR, 'downloaded')
 LOCK_FILE = join(BASE_DIR, 'lock')
 
-
-WEBHOOK_BACKEND_PIPELINES = [
-    'webhooks.backends.slack.SlackClient',
-]
+DEFAULT_WEBHOOK_BACKEND = 'webhooks.backends.slack.SlackClient'
+WEBHOOK_BACKEND_PIPELINES = [b for b in os.environ.get('WEBHOOK_BACKEND_PIPELINE', DEFAULT_WEBHOOK_BACKEND).split(',') if b]
 
 MIN_DURATION = int(os.environ.get('MIN_DURATION') or 10)  # minute
 
