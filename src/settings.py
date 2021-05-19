@@ -22,7 +22,7 @@ ZOOM_PAGE_SIZE = int(os.environ.get("ZOOM_PAGE_SIZE") or 10)
 VIDEO_DIR = join(BASE_DIR, 'video')
 
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
-SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL', '')
 SLACK_CHANNELS_UNIQUE_SETTINGS = {}  # Example: {'lesson_1': ['#main', '#lessons']}
 NOT_SEND_MSG_TO_PUBLIC_CHANNEL_FOR_MEETINGS = [
     n.strip() for n in os.environ.get("NOT_SEND_MSG_TO_PUBLIC_CHANNEL_FOR_MEETINGS", "").split(",")

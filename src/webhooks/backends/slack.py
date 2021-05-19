@@ -11,7 +11,7 @@ class SlackClient(WebHookBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.chat_url = urljoin(self.BASE_URL, 'chat.postMessage')
-        self.channels = [ch.strip() for ch in SLACK_CHANNEL.split(',')]
+        self.channels = [ch.strip() for ch in SLACK_CHANNEL.split(',') if ch]
         self.channels_unique_settings = SLACK_CHANNELS_UNIQUE_SETTINGS
         self.bot_name = 'zoom2youtube'
         self.token = SLACK_TOKEN
