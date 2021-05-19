@@ -17,11 +17,12 @@ ZOOM_EMAIL = os.environ.get('ZOOM_EMAIL')
 ZOOM_API_KEY = os.environ.get("ZOOM_API_KEY")
 ZOOM_API_SECRET = os.environ.get("ZOOM_API_SECRET")
 ZOOM_FROM_DAY_DELTA = int(os.environ.get("ZOOM_FROM_DAY_DELTA") or 7)
+ZOOM_PAGE_SIZE = int(os.environ.get("ZOOM_PAGE_SIZE") or 10)
 
 VIDEO_DIR = join(BASE_DIR, 'video')
 
 SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
-SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL', '')
 SLACK_CHANNELS_UNIQUE_SETTINGS = {}  # Example: {'lesson_1': ['#main', '#lessons']}
 NOT_SEND_MSG_TO_PUBLIC_CHANNEL_FOR_MEETINGS = [
     n.strip() for n in os.environ.get("NOT_SEND_MSG_TO_PUBLIC_CHANNEL_FOR_MEETINGS", "").split(",")
@@ -32,10 +33,8 @@ ZAPIER_URL = os.environ.get('ZAPIER_URL')
 DOWNLOADED_FILES = join(BASE_DIR, 'downloaded')
 LOCK_FILE = join(BASE_DIR, 'lock')
 
-
-WEBHOOK_BACKEND_PIPELINES = [
-    'webhooks.backends.slack.SlackClient',
-]
+DEFAULT_WEBHOOK_BACKEND = 'webhooks.backends.slack.SlackClient'
+WEBHOOK_BACKEND_PIPELINES = [b for b in os.environ.get('WEBHOOK_BACKEND_PIPELINE', DEFAULT_WEBHOOK_BACKEND).split(',') if b]
 
 MIN_DURATION = int(os.environ.get('MIN_DURATION') or 10)  # minute
 
